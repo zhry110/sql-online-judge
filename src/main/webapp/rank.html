@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>菜鸟OJ</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">SQL OJ</a>
+        </div>
+        <div>
+            <!--向左对齐-->
+            <ul class="nav navbar-nav navbar-left">
+                <li id="problem"><a href="javascript:gotoIndex(1)">问题</a></li>
+                <li id="exam"><a href="javascript:gotoExam(1)">考试</a></li>
+                <li class="active" id="rank"><a href="javascript:gotoRank(1)">排名</a></li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control">
+                            <span class="input-group-btn">
+						<button class="btn btn-default" type="button">
+							Go!
+						</button>
+					</span>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->
+            </form>
+
+            <!--向右对齐-->
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="menuname">
+                        username <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" id="menu">
+
+                    </ul>
+                </li>
+            </ul>
+            <p class="navbar-text navbar-right" id="showDate"></p>
+        </div>
+    </div>
+</nav>
+<div id="list" class="container">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>top</th>
+            <th>name</th>
+            <th>accept</th>
+        </tr>
+        </thead>
+        <tbody id="ranklist">
+
+        </tbody>
+    </table>
+</div>
+</body>
+<script type="text/javascript" src="js/util.js"></script>
+<script type="text/javascript">
+var getRankList = function () {
+    $.get("/user/rank.do?",{},function (data) {
+        console.log(data);
+        var num = data.data.length;
+        var pos ;
+        if (num == 0)
+            return;
+        var start;
+        if (data.data[0].pos != null)
+        {
+            $("#ranklist").append("<tr>\n" +
+                "            <td>"+data.data[0].pos+"</td>\n" +
+                "            <td>"+data.data[0].name+"</td>\n" +
+                "            <td>"+data.data[0].accept+"</td>\n" +
+                "        </tr>");
+            start = 1;
+        } else {
+            start = 0;
+        }
+        for (var i = start; i < num;i++)
+        {
+
+            pos = i+1 - start;
+            $("#ranklist").append("<tr>\n" +
+                "            <td>"+pos+"</td>\n" +
+                "            <td>"+data.data[i].name+"</td>\n" +
+                "            <td>"+data.data[i].accept+"</td>\n" +
+                "        </tr>");
+        }
+    });
+}
+
+getRankList();
+</script>
+</html>

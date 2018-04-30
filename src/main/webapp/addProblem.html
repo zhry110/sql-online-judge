@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>菜鸟OJ</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-select.min.css">
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-select.min.js"></script>
+    <link rel=stylesheet href="lib/codemirror.css">
+    <script src="lib/codemirror.js"></script>
+    <script src="mode/sql/sql.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">SQL OJ</a>
+        </div>
+        <div>
+            <!--向左对齐-->
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="javascript:gotoIndex(1)">问题</a></li>
+                <li><a href="javascript:gotoExam(1)">考试</a></li>
+                <li><a href="javascript:gotoRank(1)">排名</a></li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control">
+                            <span class="input-group-btn">
+						<button class="btn btn-default" type="button">
+							Go!
+						</button>
+					</span>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->
+            </form>
+
+            <!--向右对齐-->
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="menuname">
+                        username <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" id="menu">
+
+                    </ul>
+                </li>
+            </ul>
+            <p class="navbar-text navbar-right" id="showDate"></p>
+        </div>
+    </div>
+</nav>
+<div class="container" id="container">
+    <h3>添加题目</h3>
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <label for="title" class="col-sm-2 control-label">标题</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="title"
+                       placeholder="请输入标题">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">分值</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" id="score"
+                       placeholder="请输入分值">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">答案</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" id="answer" placeholder="题目答案" rows="2"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">描述</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" id="des" placeholder="题目描述" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">考试</label>
+            <div class="col-sm-10">
+                <select id="test" class="selectpicker  form-control" data-live-search="false">
+                    <option value="0">aaa</option>
+                    <option value="1">bbb</option>
+                    <option value="2">ccc</option>
+
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">类型</label>
+            <div class="col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" id="select"> SELECT
+                    </label>
+                    &nbsp;&nbsp;
+                    <label>
+                        <input type="checkbox" id="no_select"> UPDATE INSERT DELETE ...
+                    </label>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">操作表</label>
+            <div class="col-sm-10">
+                <table class="table table-bordered">
+                    <caption></caption>
+                    <thead>
+                    <tr>
+                        <th>表名称</th>
+                        <th>创建语句</th>
+                        <th>状态</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_wraper">
+                    <tr>
+                        <td style="width: 20%"><input type="text" id="table_name1" class="form-control" placeholder="输入表名称"></td>
+                        <td><input type="text" id="table_sql1" class="form-control" placeholder="输入表创建语句"></td>
+                        <td id="table_state1">等待结果</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <a href="javascript:addTable()">新增一张表</a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">测试用例</label>
+            <div class="col-sm-10" id="test_case_wraper">
+                <div style="border-color: #bbbbbb;border-style: solid;border-width:1px;margin-top: 10px;margin-bottom: 10px">
+                    <textarea id="test_case1"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label"></label>
+            <div class="col-sm-10">
+                <a href="javascript:addTestCase()">新增测试用例</a>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" onclick="postProblem()" class="btn btn-default">发布</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+<script type="text/javascript" src="js/util.js"></script>
+<script type="text/javascript">
+    var problemId = getUrlParam("id");
+    var tablesNum = 1;
+    var testCaseNum = 1;
+    var editors = [];
+    var postProblem = function () {
+        var json = {};
+        json.title = $("#title").val();
+        json.score = $("#score").val();
+        json.answer = $("#answer").val();
+        json.des = $("#des").val();
+        json.test = $("#test").val();
+        var select = $("#select").is(":checked");
+        var noSelect = $("#no_select").is(":checked");
+        if (select && noSelect) {
+            alert("不能同时选择select 和 update insert delete");
+            return;
+        } else if (!select && !noSelect) {
+            alert("选择题目类型");
+            return;
+        }
+        json.select = (select == true);
+        json.tables = [];
+        json.tablesqls = [];
+        json.testCase = [];
+        for (var i = 1; i <= tablesNum;i++) {
+            json.tables.push($("#table_name"+i).val());
+            json.tablesqls.push($("#table_sql"+i).val());
+        }
+        for (var i = 1; i <= testCaseNum;i++) {
+            json.testCase.push(editors[i - 1].getValue());
+        }
+
+        console.log(JSON.stringify(json));
+        $.get("/problems/add.do?", {json: JSON.stringify(json)},
+            function (data) {
+                console.log(data);
+                if (data.status == 0) {
+                    alert("发布题目成功");
+                } else {
+                    alert("发布题目失败 "+data.msg);
+                }
+            });
+    }
+    var initTestCase = function (i) {
+        var editor = CodeMirror.fromTextArea(document.getElementById("test_case" + i), {
+            mode: "text/x-mysql", //实现Java代码高亮
+            lineNumbers: true,	//显示行号
+            theme: "default",	//设置主题
+            lineWrapping: true,	//代码折叠
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            matchBrackets: true,
+            border: true
+        });
+        editors.push(editor);
+    }
+    var addTestCase = function () {
+        testCaseNum ++;
+        $("#test_case_wraper").append("<div style=\"border-color: #bbbbbb;border-style: solid;border-width:1px;margin-top: 10px;margin-bottom: 10px\">\n" +
+            "                    <textarea id=\"test_case"+testCaseNum+"\"></textarea>\n" +
+            "                </div>");
+        initTestCase(testCaseNum);
+    };
+    initTestCase(testCaseNum);
+    var addTable = function () {
+        tablesNum ++;
+        $("#table_wraper").append("<tr>\n" +
+            "                        <td style=\"width: 20%\"><input type=\"text\" id=\"table_name"+tablesNum+"\" class=\"form-control\" placeholder=\"输入表名称\"></td>\n" +
+            "                        <td><input type=\"text\" id=\"table_sql"+tablesNum+"\" class=\"form-control\" placeholder=\"输入表创建语句\"></td>\n" +
+            "                        <td id=\"table_state"+tablesNum+"\">等待结果</td>\n" +
+            "                    </tr>");
+    }
+
+</script>
+</html>

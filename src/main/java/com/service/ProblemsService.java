@@ -1,0 +1,15 @@
+package com.service;
+
+import com.common.ServerResponse;
+import com.core.Problem;
+import com.github.pagehelper.PageInfo;
+import com.pojo.Admin;
+import com.vo.ProblemDetailVo;
+import com.vo.ProblemsVo;
+
+public interface ProblemsService {
+    PageInfo getProblems(Long testId,Integer pageNum,Integer pageSize,Integer uid);
+    ProblemDetailVo getProblemDetail(Long proId);
+    ServerResponse judge(String sql,Long proId);
+    ServerResponse add(String json, Admin admin);
+}

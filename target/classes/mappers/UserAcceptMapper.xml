@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.UserAcceptMapper" >
+  <resultMap id="BaseResultMap" type="com.pojo.UserAccept" >
+    <constructor >
+      <idArg column="id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="uid" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="time" jdbcType="TIME" javaType="java.util.Date" />
+      <arg column="pro_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="correct" jdbcType="BIT" javaType="java.lang.Boolean" />
+    </constructor>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.pojo.UserAccept" >
+    <constructor >
+      <idArg column="id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="uid" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="time" jdbcType="TIME" javaType="java.util.Date" />
+      <arg column="pro_id" jdbcType="BIGINT" javaType="java.lang.Long" />
+      <arg column="correct" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="post_sql" jdbcType="LONGVARCHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, uid, time, pro_id, correct
+  </sql>
+  <sql id="Blob_Column_List" >
+    post_sql
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from user_ac
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from user_ac
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.pojo.UserAccept" >
+    insert into user_ac (id, uid, time, pro_id, 
+      correct, post_sql)
+    values (#{id,jdbcType=BIGINT}, #{uid,jdbcType=INTEGER}, #{time,jdbcType=TIME}, #{proId,jdbcType=BIGINT}, 
+      #{correct,jdbcType=BIT}, #{postSql,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pojo.UserAccept" >
+    insert into user_ac
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="proId != null" >
+        pro_id,
+      </if>
+      <if test="correct != null" >
+        correct,
+      </if>
+      <if test="postSql != null" >
+        post_sql,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIME},
+      </if>
+      <if test="proId != null" >
+        #{proId,jdbcType=BIGINT},
+      </if>
+      <if test="correct != null" >
+        #{correct,jdbcType=BIT},
+      </if>
+      <if test="postSql != null" >
+        #{postSql,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pojo.UserAccept" >
+    update user_ac
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIME},
+      </if>
+      <if test="proId != null" >
+        pro_id = #{proId,jdbcType=BIGINT},
+      </if>
+      <if test="correct != null" >
+        correct = #{correct,jdbcType=BIT},
+      </if>
+      <if test="postSql != null" >
+        post_sql = #{postSql,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pojo.UserAccept" >
+    update user_ac
+    set uid = #{uid,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIME},
+      pro_id = #{proId,jdbcType=BIGINT},
+      correct = #{correct,jdbcType=BIT},
+      post_sql = #{postSql,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pojo.UserAccept" >
+    update user_ac
+    set uid = #{uid,jdbcType=INTEGER},
+      time = #{time,jdbcType=TIME},
+      pro_id = #{proId,jdbcType=BIGINT},
+      correct = #{correct,jdbcType=BIT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="allCount" parameterType="Long" resultType="Long">
+    select COUNT(*) FROM user_ac where pro_id = #{proId}
+  </select>
+  <select id="acCount" parameterType="Long" resultType="Long">
+    select COUNT(*) FROM user_ac where pro_id = #{proId} and correct = 1
+  </select>
+
+  <select id="problemAndUserPost" resultMap="ResultMapWithBLOBs" parameterType="map">
+    select * from user_ac where uid = #{uid} and pro_id = #{proId} ORDER BY id DESC limit 5
+  </select>
+  <select id="userPost" resultMap="ResultMapWithBLOBs" parameterType="Integer">
+    select * from user_ac where uid = #{uid} ORDER BY id DESC limit 5
+  </select>
+<select id="selectAccept" resultType="int" parameterType="map">
+  select count(*) from user_ac where pro_id = #{proId} and uid = #{uid} and correct = true
+</select>
+<select id="userAcceptCount" parameterType="Integer" resultType="Integer">
+  select COUNT(DISTINCT pro_id) from SQLOJ.user_ac where uid = #{uid}
+</select>
+
+</mapper>

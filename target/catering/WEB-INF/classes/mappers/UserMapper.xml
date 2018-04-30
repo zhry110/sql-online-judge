@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.pojo.User" >
+    <constructor >
+      <idArg column="id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="username" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="passwd" jdbcType="CHAR" javaType="java.lang.String" />
+      <arg column="name" jdbcType="CHAR" javaType="java.lang.String" />
+    </constructor>
+  </resultMap>
+  <resultMap id="uidAndAccept" type="com.pojo.UidAndAccept">
+    <constructor>
+      <arg column="uid" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+      <arg column="accept" jdbcType="INTEGER" javaType="java.lang.Integer"/>
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, username, passwd, name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pojo.User" >
+    insert into user (id, username, passwd, 
+      name)
+    values (#{id,jdbcType=INTEGER}, #{username,jdbcType=CHAR}, #{passwd,jdbcType=CHAR}, 
+      #{name,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pojo.User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="username != null" >
+        username,
+      </if>
+      <if test="passwd != null" >
+        passwd,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=CHAR},
+      </if>
+      <if test="passwd != null" >
+        #{passwd,jdbcType=CHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pojo.User" >
+    update user
+    <set >
+      <if test="username != null" >
+        username = #{username,jdbcType=CHAR},
+      </if>
+      <if test="passwd != null" >
+        passwd = #{passwd,jdbcType=CHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pojo.User" >
+    update user
+    set username = #{username,jdbcType=CHAR},
+      passwd = #{passwd,jdbcType=CHAR},
+      name = #{name,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByName" parameterType="String" resultMap="BaseResultMap">
+    SELECT * FROM user WHERE username = #{name}
+  </select>
+  <select id="rank" resultMap="uidAndAccept">
+    SELECT uid, count(DISTINCT pro_id) as 'accept' from user_ac WHERE correct=TRUE  GROUP BY uid ORDER BY count(DISTINCT pro_id) DESC limit 50
+  </select>
+  <select id="selfRank" parameterType="Integer" resultType="Integer">
+    SELECT count(*) FROM ((SELECT count(DISTINCT pro_id) as accept from user_ac as a WHERE correct=TRUE GROUP BY uid ORDER BY count(DISTINCT pro_id))) as c WHERE c.accept > (SELECT count(DISTINCT pro_id) FROM user_ac as b where uid = #{uid})
+  </select>
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.TablesForProblemMapper" >
+  <resultMap id="BaseResultMap" type="com.pojo.TablesForProblem" >
+    <constructor >
+      <idArg column="user_table_name" jdbcType="CHAR" javaType="java.lang.String" />
+      <idArg column="pro_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="access" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    user_table_name, pro_id, access
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.pojo.TablesForProblemKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from tables_for_problems
+    where user_table_name = #{userTableName,jdbcType=CHAR}
+      and pro_id = #{proId,jdbcType=INTEGER}
+  </select>
+  <select id="selectProblemTables" resultMap="BaseResultMap" parameterType="Long">
+    SELECT * FROM tables_for_problems where pro_id = #{proId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.pojo.TablesForProblemKey" >
+    delete from tables_for_problems
+    where user_table_name = #{userTableName,jdbcType=CHAR}
+      and pro_id = #{proId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pojo.TablesForProblem" >
+    insert into tables_for_problems (user_table_name, pro_id, access
+      )
+    values (#{userTableName,jdbcType=CHAR}, #{proId,jdbcType=INTEGER}, #{access,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.pojo.TablesForProblem" >
+    insert into tables_for_problems
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userTableName != null" >
+        user_table_name,
+      </if>
+      <if test="proId != null" >
+        pro_id,
+      </if>
+      <if test="access != null" >
+        access,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userTableName != null" >
+        #{userTableName,jdbcType=CHAR},
+      </if>
+      <if test="proId != null" >
+        #{proId,jdbcType=INTEGER},
+      </if>
+      <if test="access != null" >
+        #{access,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.pojo.TablesForProblem" >
+    update tables_for_problems
+    <set >
+      <if test="access != null" >
+        access = #{access,jdbcType=INTEGER},
+      </if>
+    </set>
+    where user_table_name = #{userTableName,jdbcType=CHAR}
+      and pro_id = #{proId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.pojo.TablesForProblem" >
+    update tables_for_problems
+    set access = #{access,jdbcType=INTEGER}
+    where user_table_name = #{userTableName,jdbcType=CHAR}
+      and pro_id = #{proId,jdbcType=INTEGER}
+  </update>
+</mapper>

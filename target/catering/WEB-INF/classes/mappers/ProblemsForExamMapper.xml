@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.ProblemsForExamMapper" >
+  <resultMap id="BaseResultMap" type="com.pojo.ProblemsForExamKey" >
+    <constructor >
+      <idArg column="pro_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <idArg column="exam_id" jdbcType="INTEGER" javaType="java.lang.Integer" />
+    </constructor>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.pojo.ProblemsForExamKey" >
+    delete from problems_for_exam
+    where pro_id = #{proId,jdbcType=INTEGER}
+      and exam_id = #{examId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.pojo.ProblemsForExamKey" >
+    insert into problems_for_exam (pro_id, exam_id)
+    values (#{proId,jdbcType=INTEGER}, #{examId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.pojo.ProblemsForExamKey" >
+    insert into problems_for_exam
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="proId != null" >
+        pro_id,
+      </if>
+      <if test="examId != null" >
+        exam_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="proId != null" >
+        #{proId,jdbcType=INTEGER},
+      </if>
+      <if test="examId != null" >
+        #{examId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>

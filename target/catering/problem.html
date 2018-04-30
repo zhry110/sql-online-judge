@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>菜鸟OJ</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel=stylesheet href="lib/codemirror.css">
+    <script src="lib/codemirror.js"></script>
+    <script src="mode/sql/sql.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">SQL OJ</a>
+        </div>
+        <div>
+            <!--向左对齐-->
+            <ul class="nav navbar-nav navbar-left">
+                <li><a href="javascript:gotoIndex(1)">问题</a></li>
+                <li><a href="javascript:gotoExam(1)">考试</a></li>
+                <li><a href="javascript:gotoRank(1)">排名</a></li>
+            </ul>
+            <form class="navbar-form navbar-left" role="search">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <input type="text" class="form-control">
+                            <span class="input-group-btn">
+						<button class="btn btn-default" type="button">
+							Go!
+						</button>
+					</span>
+                        </div><!-- /input-group -->
+                    </div><!-- /.col-lg-6 -->
+                </div><!-- /.row -->
+            </form>
+
+            <!--向右对齐-->
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="menuname">
+                        username <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" id="menu">
+
+                    </ul>
+                </li>
+            </ul>
+            <p class="navbar-text navbar-right" id="showDate"></p>
+        </div>
+    </div>
+</nav>
+<div class="container" id="container">
+    <div id="problem_info">
+
+    </div>
+
+    <h4>#此处编写你的sql</h4>
+    <div id="edit"
+         style="border-color: #bbbbbb;border-style: solid;border-width:1px;margin-top: 10px;margin-bottom: 10px">
+
+    </div>
+    <div align="right">
+        <button type="button" class="btn btn-primary" onclick="submitSql(editor.getValue())">提交sql</button>
+    </div>
+    <br>
+    <br>
+    <ul class="nav nav-tabs nav-justified">
+        <li id="tip_bar" class="active"><a href="javascript:tips()">注意事项</a></li>
+        <li id="history_bar"><a href="javascript:his()">历史提交</a></li>
+    </ul>
+    <br>
+    <div class="container" >
+        <div id="tip" style="padding-bottom: 50px">
+            <h4>
+                注意
+            </h4>
+            <p>提交一个sql前 你需要明白</p>
+            <ul class="list-group-item-text">
+                <li>#sql语句中不要写出数据库的名称</li>
+                <li>#你的sql将在多个测试用例上运行,如果你觉得你的sql正确，但系统判错，请你考虑多个测试用例的情况</li>
+                <li>#SELECT查询类题目请使用一条语句完成</li>
+                <li>#输入多条语句时，用换行符分割</li>
+                <li>#Accept的条件是结果集和答案完全相等 包括列数、列类型、列顺序（未指出顺序时，保持原顺序）、每一条记录</li>
+                <li>#判断系统DBMS为MySQL (version 5.7.19)，不要使用MySQL不支持的语句</li>
+            </ul>
+            <p>&nbsp;</p>
+        </div>
+
+    </div>
+
+    <div id="table">
+        <table  class="table table-bordered" id="post_wraper" >
+            <caption>历史提交</caption>
+            <thead>
+            <tr>
+                <th>sql</th>
+                <th>状态</th>
+            </tr>
+            </thead>
+            <tbody id="post">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">提示</h4>
+            </div>
+            <div class="modal-body" id="tips" style="color: #ee0000"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+</body>
+<script type="text/javascript" src="js/util.js"></script>
+<script type="text/javascript">
+    var problemId = getUrlParam("id");
+    var editor;
+    if (problemId == null)
+        problemId = 1;
+    var getProblemDetail = function (problemId) {
+        $.get("/problems/problem.do?", {proId: problemId},
+            function (data) {
+                console.log(data);
+                $("#problem_info").append("<h2>" + data.data.id + "." + data.data.title + "</h2>");
+                $("#problem_info").append("<p>" + data.data.description + "</p>");
+                $("#problem_info").append("<pre>" + data.data.table + "</pre>");
+                $("#edit").append("<textarea class=\"form-control\" id=\"code\" name=\"code\" style=\"font-size: 50px\"></textarea>");
+                editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+                    mode: "text/x-mysql", //实现Java代码高亮
+                    lineNumbers: true,	//显示行号
+                    theme: "default",	//设置主题
+                    lineWrapping: true,	//代码折叠
+                    foldGutter: true,
+                    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                    matchBrackets: true,
+                    border: true
+                });
+            });
+    }
+    var getHistoryPosts = function () {
+        $.get("/post/post.do?", {proId: problemId},
+            function (data) {
+                console.log(data);
+                $("#post").remove();
+                $("#post_wraper").append("<tbody id=\"post\">\n" +
+                    "\n" +
+                    "                </tbody>");
+                if (data.status == 0) {
+                    var num = data.data.length;
+                    if (num == 0)
+                        $("#post_wraper").hide();
+                    else
+                        for (var i = 0; i < num; i++) {
+                            var status = "<strong style='color: #77ee77'>Accept</strong>";
+                        if (data.data[i].correct == false)
+                            status = "<strong style='color: #990000'>Wrong Answer</strong>";
+                            $("#post").append("<tr>\n" +
+                                "            <td>" + data.data[i].postSql + "</td>\n" +
+                                "            <td>" + status + "</td>\n" +
+                                "        </tr>");
+                        }
+                } else {
+                    $("#post_wraper").remove();
+                }
+
+
+            });
+    }
+    var tips = function()
+    {
+        $("#tip_bar").addClass("active");
+        $("#history_bar").removeClass("active");
+        $("#tip").show();
+        $("#post_wraper").hide();
+    }
+    var his = function()
+    {
+        getHistoryPosts();
+        $("#history_bar").addClass("active");
+        $("#tip_bar").removeClass("active");
+        $("#tip").hide();
+        $("#post_wraper").show();
+    }
+    getProblemDetail(problemId);
+    getHistoryPosts();
+    tips();
+
+</script>
+<script type="text/javascript">
+    var submitSql = function (sql) {
+
+        if (sql != null) {
+            $.post("/problems/judge.do?", {sql: sql, proId: problemId},
+                function (data) {
+                    console.log(data);
+                    if (data.status == 0) {
+                        $("#myModalLabel").text("判定通过");
+                        $("#tips").css("color","#7fff00");
+                        $("#tips").text(data.msg);
+                        $("#myModal").modal();
+                    } else {
+                        $("#myModalLabel").text("判定未通过");
+                        $("#tips").css("color","#990000");
+                        $("#tips").text(data.msg);
+                        $("#myModal").modal();
+                    }
+                    his();
+                });
+
+        }
+    }
+</script>
+</html>
