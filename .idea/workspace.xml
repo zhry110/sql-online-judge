@@ -7,8 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36d73510-be58-4d2e-b350-6162e155d0a2" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/catering.war" afterPath="$PROJECT_DIR$/target/catering.war" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/mappers/ProblemsMapper.xml" afterPath="$PROJECT_DIR$/src/main/resources/mappers/ProblemsMapper.xml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -44,8 +44,8 @@
       <file leaf-file-name="ProblemsServiceImpl.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/service/impl/ProblemsServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="894">
-              <caret line="97" column="37" lean-forward="false" selection-start-line="97" selection-start-column="37" selection-end-line="97" selection-end-column="37" />
+            <state relative-caret-position="460">
+              <caret line="219" column="49" lean-forward="false" selection-start-line="219" selection-start-column="31" selection-end-line="219" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -61,29 +61,29 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProblemsMapper.xml" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ProblemsMapper.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/resources/mappers/ProblemsMapper.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="674">
-              <caret line="165" column="11" lean-forward="false" selection-start-line="165" selection-start-column="11" selection-end-line="165" selection-end-column="11" />
+            <state relative-caret-position="418">
+              <caret line="19" column="30" lean-forward="false" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
               <folding>
-                <marker date="1525152288000" expanded="true" signature="1904:2054" ph="select , fro... " />
-                <marker date="1525152288000" expanded="true" signature="2138:2195" ph="delete from " />
-                <marker date="1525152288000" expanded="true" signature="2279:2657" ph="insert into problems... " />
-                <marker date="1525152288000" expanded="true" signature="4301:5108" ph="update probl... " />
-                <marker date="1525152288000" expanded="true" signature="5213:5612" ph="update probl... " />
-                <marker date="1525152288000" expanded="true" signature="5699:5994" ph="update probl... " />
-                <marker date="1525152288000" expanded="true" signature="6094:6278" ph="select , fro... " />
+                <marker date="1525156608000" expanded="true" signature="1904:2054" ph="select , fro... " />
+                <marker date="1525156608000" expanded="true" signature="2138:2195" ph="delete from " />
+                <marker date="1525156608000" expanded="true" signature="2321:2676" ph="insert into problems... " />
+                <marker date="1525156608000" expanded="true" signature="4320:5127" ph="update probl... " />
+                <marker date="1525156608000" expanded="true" signature="5232:5631" ph="update probl... " />
+                <marker date="1525156608000" expanded="true" signature="5718:6013" ph="update probl... " />
+                <marker date="1525156608000" expanded="true" signature="6113:6297" ph="select , fro... " />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="generatorConfig.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="generatorConfig.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/generatorConfig.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="528">
-              <caret line="24" column="39" lean-forward="true" selection-start-line="24" selection-start-column="39" selection-end-line="24" selection-end-column="39" />
+            <state relative-caret-position="352">
+              <caret line="16" column="56" lean-forward="true" selection-start-line="16" selection-start-column="56" selection-end-line="16" selection-end-column="56" />
               <folding />
             </state>
           </provider>
@@ -199,7 +199,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/core/AccessJudge.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/problem.html" />
         <option value="$PROJECT_DIR$/src/main/resources/generatorConfig.xml" />
-        <option value="$PROJECT_DIR$/src/main/resources/mappers/ProblemsMapper.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/dao/ProblemsMapper.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/pojo/ProblemsWithBLOBs.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/service/impl/AccessJudgeServiceImpl.java" />
@@ -207,6 +206,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/service/impl/ProblemsServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/service/impl/JudgeServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/controller/problem/ProblemController.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/mappers/ProblemsMapper.xml" />
       </list>
     </option>
   </component>
@@ -777,7 +777,7 @@
       <workItem from="1525105179668" duration="115000" />
       <workItem from="1525149992130" duration="4371000" />
       <workItem from="1525155643737" duration="5000" />
-      <workItem from="1525155668542" duration="232000" />
+      <workItem from="1525155668542" duration="1024000" />
     </task>
     <task id="LOCAL-00001" summary="update problems table">
       <created>1525155805493</created>
@@ -786,11 +786,18 @@
       <option name="project" value="LOCAL" />
       <updated>1525155805494</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="update problems table">
+      <created>1525155912856</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1525155912856</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="239309000" />
+    <option name="totallyTimeSpent" value="240101000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="48" y="23" width="1870" height="1057" extended-state="0" />
@@ -1209,14 +1216,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/service/impl/ProblemsServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="894">
-          <caret line="97" column="37" lean-forward="false" selection-start-line="97" selection-start-column="37" selection-end-line="97" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/service/impl/JudgeServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="440">
@@ -1225,27 +1224,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/mappers/ProblemsMapper.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/generatorConfig.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="674">
-          <caret line="165" column="11" lean-forward="false" selection-start-line="165" selection-start-column="11" selection-end-line="165" selection-end-column="11" />
-          <folding>
-            <marker date="1525152288000" expanded="true" signature="1904:2054" ph="select , fro... " />
-            <marker date="1525152288000" expanded="true" signature="2138:2195" ph="delete from " />
-            <marker date="1525152288000" expanded="true" signature="2279:2657" ph="insert into problems... " />
-            <marker date="1525152288000" expanded="true" signature="4301:5108" ph="update probl... " />
-            <marker date="1525152288000" expanded="true" signature="5213:5612" ph="update probl... " />
-            <marker date="1525152288000" expanded="true" signature="5699:5994" ph="update probl... " />
-            <marker date="1525152288000" expanded="true" signature="6094:6278" ph="select , fro... " />
-          </folding>
+        <state relative-caret-position="352">
+          <caret line="16" column="56" lean-forward="true" selection-start-line="16" selection-start-column="56" selection-end-line="16" selection-end-column="56" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/generatorConfig.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/service/impl/ProblemsServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="528">
-          <caret line="24" column="39" lean-forward="true" selection-start-line="24" selection-start-column="39" selection-end-line="24" selection-end-column="39" />
+        <state relative-caret-position="460">
+          <caret line="219" column="49" lean-forward="false" selection-start-line="219" selection-start-column="31" selection-end-line="219" selection-end-column="49" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/mappers/ProblemsMapper.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="418">
+          <caret line="19" column="30" lean-forward="false" selection-start-line="19" selection-start-column="30" selection-end-line="19" selection-end-column="30" />
+          <folding>
+            <marker date="1525156608000" expanded="true" signature="1904:2054" ph="select , fro... " />
+            <marker date="1525156608000" expanded="true" signature="2138:2195" ph="delete from " />
+            <marker date="1525156608000" expanded="true" signature="2321:2676" ph="insert into problems... " />
+            <marker date="1525156608000" expanded="true" signature="4320:5127" ph="update probl... " />
+            <marker date="1525156608000" expanded="true" signature="5232:5631" ph="update probl... " />
+            <marker date="1525156608000" expanded="true" signature="5718:6013" ph="update probl... " />
+            <marker date="1525156608000" expanded="true" signature="6113:6297" ph="select , fro... " />
+          </folding>
         </state>
       </provider>
     </entry>
