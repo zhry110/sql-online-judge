@@ -35,5 +35,7 @@
       </if>
     </trim>
   </insert>
-
+<delete id="deleteByProId" parameterType="Long">
+  DELETE FROM problems_for_exam where pro_id = #{proId}
+</delete>
 </mapper>

@@ -10,4 +10,5 @@ public interface ProblemsForExamMapper {
     int insertSelective(ProblemsForExamKey record);
 
 
+    int deleteByProId(Long proId);
 }

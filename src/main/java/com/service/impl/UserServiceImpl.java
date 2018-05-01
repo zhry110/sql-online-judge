@@ -1,8 +1,10 @@
 package com.service.impl;
 
 import com.common.ServerResponse;
+import com.dao.AdminMapper;
 import com.dao.UserAcceptMapper;
 import com.dao.UserMapper;
+import com.pojo.Admin;
 import com.pojo.UidAndAccept;
 import com.pojo.User;
 import com.service.UserService;
@@ -19,6 +21,8 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private UserAcceptMapper userAcceptMapper;
+    @Autowired
+    private AdminMapper adminMapper;
     @Override
     public ServerResponse<User> login(String username, String password) {
         User user = userMapper.selectByName(username);
@@ -29,6 +33,11 @@ public class UserServiceImpl implements UserService {
             return ServerResponse.createByErrorMessage("密码错误");
         }
         user.setPasswd("");
+        Admin admin = adminMapper.selectByPrimaryKey(user.getId());
+        if (admin != null)
+        {
+            user.setAdmin(true);
+        }
         return ServerResponse.createBySuccess(user);
     }
 

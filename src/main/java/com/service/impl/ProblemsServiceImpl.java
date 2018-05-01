@@ -29,6 +29,8 @@ public class ProblemsServiceImpl implements ProblemsService {
     @Autowired
     private AdminMapper adminMapper;
     @Autowired
+    private UserMapper userMapper;
+    @Autowired
     private UserAcceptMapper userAcceptMapper;
     @Autowired
     private TablesForProblemMapper tablesForProblemMapper;
@@ -48,7 +50,9 @@ public class ProblemsServiceImpl implements ProblemsService {
             passListVo.setTitle(p.getTitle());
             Admin admin = adminMapper.selectByPrimaryKey(p.getAdmin());
             if (admin != null) {
-                passListVo.setSourse(admin.getName());
+                User user = userMapper.selectByPrimaryKey(admin.getId());
+                if (user != null)
+                    passListVo.setSourse(user.getName());
             } else {
                 passListVo.setSourse(" ");
             }
@@ -170,6 +174,7 @@ public class ProblemsServiceImpl implements ProblemsService {
             problems.setScore(score);
             problems.setAnswer(answer);
             problems.setType(!select);
+            problems.setAdmin(admin.getId());
             if (problemsMapper.insert(problems) < 0) {
                 return ServerResponse.createByErrorMessage("插入题目至数据库时遇到错误");
             }
@@ -272,6 +277,14 @@ public class ProblemsServiceImpl implements ProblemsService {
         } catch (Exception e) {
             return ServerResponse.createByErrorMessage(e.getMessage());
         }
+        return ServerResponse.createBySuccess();
+    }
+
+    @Override
+    public ServerResponse delete(Long proId) {
+        problemsMapper.deleteByPrimaryKey(proId);
+        problemsForExamMapper.deleteByProId(proId);
+        tablesForProblemMapper.deleteByProId(proId);
         return ServerResponse.createBySuccess();
     }
 

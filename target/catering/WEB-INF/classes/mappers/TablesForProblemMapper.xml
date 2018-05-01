@@ -73,4 +73,7 @@
     where user_table_name = #{userTableName,jdbcType=CHAR}
       and pro_id = #{proId,jdbcType=INTEGER}
   </update>
+  <delete id="deleteByProId" parameterType="Long">
+    DELETE FROM tables_for_problems where pro_id = #{proId}
+  </delete>
 </mapper>

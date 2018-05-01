@@ -2,6 +2,7 @@ package com.controller.problem;
 
 import com.common.Const;
 import com.common.ServerResponse;
+import com.pojo.Admin;
 import com.pojo.User;
 import com.service.JudgeService;
 import com.service.ProblemsService;
@@ -73,8 +74,29 @@ public class ProblemController {
     public ServerResponse add(String json, HttpSession session){
         if (json == null)
             return ServerResponse.createByErrorMessage("NULL post");
+        User user = (User) session.getAttribute(Const.CUR_USER);
+        if (user == null)
+            return ServerResponse.createByErrorMessage("未登录");
+        if (!user.isAdmin()) {
+            return ServerResponse.createByErrorMessage("非管理员无法发布题目");
+        }
         System.out.println(json);
-        return problemsService.add(json,null);
+        Admin admin = new Admin();
+        admin.setId(user.getId());
+        return problemsService.add(json,admin);
+    }
+    @RequestMapping(value = "delete.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse delete(Long proId, HttpSession session){
+        if (proId == null)
+            return ServerResponse.createByErrorMessage("题号为空");
+        User user = (User) session.getAttribute(Const.CUR_USER);
+        if (user == null)
+            return ServerResponse.createByErrorMessage("未登录");
+        if (!user.isAdmin()) {
+            return ServerResponse.createByErrorMessage("无权限");
+        }
+        return problemsService.delete(proId);
     }
 
 }

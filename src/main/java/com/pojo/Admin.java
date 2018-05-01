@@ -3,14 +3,11 @@ package com.pojo;
 public class Admin {
     private Integer id;
 
-    private String name;
+    private Integer pri;
 
-    private String passwd;
-
-    public Admin(Integer id, String name, String passwd) {
+    public Admin(Integer id, Integer pri) {
         this.id = id;
-        this.name = name;
-        this.passwd = passwd;
+        this.pri = pri;
     }
 
     public Admin() {
@@ -25,19 +22,11 @@ public class Admin {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Integer getPri() {
+        return pri;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public String getPasswd() {
-        return passwd;
-    }
-
-    public void setPasswd(String passwd) {
-        this.passwd = passwd == null ? null : passwd.trim();
+    public void setPri(Integer pri) {
+        this.pri = pri;
     }
 }

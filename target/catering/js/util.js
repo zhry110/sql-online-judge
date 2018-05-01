@@ -8,6 +8,7 @@ var gotoExam = function (pageNum) {
     window.location.href = "exam.html?pageNum="+pageNum;
 }
 
+var isAdmin = false;
 
 var gotoPage = function (pageNum) {
     window.location.href = "index.html?pageNum="+pageNum;
@@ -37,6 +38,17 @@ var getUserInfo = function () {
            $("#menu").append("<li><a href=\"self.html\">"+data.data.name+"</a></li> <li class=\"divider\"></li>\n" +
                "                    <li><a style='color: #ff0000' href=\"javascript:logout()\">注销</a></li><li class=\"divider\"></li>\n" +
                "                    <li><a href=\"changepasswd.html\">修改密码</a></li>");
+           if (data.data.admin) {
+               isAdmin = true;
+               $("#nav").append("<li class=\"dropdown\">\n" +
+                   "                    <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">\n" +
+                   "                        管理 <b class=\"caret\"></b>\n" +
+                   "                    </a>\n" +
+                   "                    <ul class=\"dropdown-menu\" id=\"admin_menu\">\n" +
+                   "\n" + "<li><a href='addProblem.html'>添加题目</a></li>"+ "<li><a href='addExam.html'>添加考试</a></li>"+
+                   "                    </ul>\n" +
+                   "                </li>");
+           }
        }
        else
        {
@@ -54,6 +66,12 @@ var getProblemsByPagefunction = function(pageNum) {
     $.get("/problems/problems.do?",{testId:0,pageSize:50,pageNum:pageNum},
         function (data) {
             $("#container").remove();
+            var deleteTitle = "";
+            var deleteStr = "";
+            if (isAdmin) {
+                deleteTitle = "<th>操作</th>";
+
+            }
             $("#list").append("<div id=\"container\" style=\"padding-left: 1px;padding-right: 1px\">\n" +
                 "        <table class=\"table table-bordered table-striped\" id=\"problems_container\">\n" +
                 "            <thead>\n" +
@@ -73,7 +91,7 @@ var getProblemsByPagefunction = function(pageNum) {
                 "                </th>\n" +
                 "                <th>\n" +
                 "                    合格率\n" +
-                "                </th>\n" +
+                "                </th>\n" + deleteTitle+
                 "            </tr>\n" +
                 "            </thead>\n" +
                 "            <tbody id = \"problems_wraper\">\n" +
@@ -95,11 +113,14 @@ var getProblemsByPagefunction = function(pageNum) {
                 "        </tbody>");
             console.log(data);
             for (var i = 0; i < data.data.list.length; i++) {
+                if (isAdmin) {
+                    deleteStr = "<td><a href='javascript:deleteProblem("+data.data.list[i].id+")'><span class=\"\" style=\"color: rgb(255, 0, 0);\"> x</span></a></td>";
+                }
                 var acc = "<span class=\"\" style=\"color: rgb(63, 181, 60);\"> &nbsp √</span>";
                 if (data.data.list[i].accept == false)
                     acc = "";
                 $("#problems_wraper").append("<tr> <td><a href=\"javascript:gotoProblemDetail("+data.data.list[i].id+")\">"+data.data.list[i].title+"</a>"+acc+"</td><td>"+data.data.list[i].id+"" +
-                    "</td><td>"+data.data.list[i].score+"</td><td>"+data.data.list[i].sourse+"</td><td>"+data.data.list[i].correct+"</td>");
+                    "</td><td>"+data.data.list[i].score+"</td><td>"+data.data.list[i].sourse+"</td><td>"+data.data.list[i].correct+"</td>"+deleteStr);
             }
             var pages = data.data.pages;
             var curPage = data.data.pageNum;
@@ -138,7 +159,19 @@ var getProblemsByPagefunction = function(pageNum) {
         });
 }
 
-
+var deleteProblem = function (id) {
+    $.get("/problems/delete.do?",{proId:id},function (data) {
+        console.log(data);
+        if (data.status == 0)
+        {
+            window.location.reload();
+        }
+        else
+        {
+            alert("删除失败"+data.msg);
+        }
+    });
+}
 
 
 $(function(){

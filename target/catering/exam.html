@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <title>菜鸟OJ</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-datepicker.css">
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-datepicker.min.js"></script>
+    <script src="locales/bootstrap-datepicker.zh-CN.min.js"></script>
 </head>
 <body>
 
@@ -16,7 +19,7 @@
         </div>
         <div>
             <!--向左对齐-->
-            <ul class="nav navbar-nav navbar-left">
+            <ul class="nav navbar-nav navbar-left" id="nav">
                 <li id="problem"><a href="javascript:gotoIndex(1)">问题</a></li>
                 <li id="exam" class="active"><a href="javascript:gotoExam(1)">考试</a></li>
                 <li id="rank"><a href="javascript:gotoRank(1)">排名</a></li>
@@ -51,12 +54,40 @@
         </div>
     </div>
 </nav>
-<div id="list">
+<div id="list" class="container">
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>名称</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+            <th>满分</th>
+            <th>合格分数</th>
+        </tr>
+        </thead>
+        <tbody id="examlist">
 
+        </tbody>
+    </table>
 </div>
 </body>
 <script type="text/javascript" src="js/util.js"></script>
 <script type="text/javascript">
-
+var getExams = function () {
+    $.get("/exam/exams.do?",{},function (data) {
+        console.log(data);
+        var exams = data.data;
+        for (var i = 0;i < exams.length;i++) {
+            $("#examlist").append("<tr>\n" +
+                "            <td>"+exams[i].name+"</td>\n" +
+                "            <td>"+Date(exams[i].startTime).toLocaleString() +"</td>\n" +
+                "            <td>"+Date(exams[i].endTime).toLocaleString() +"</td>\n" +
+                "            <td>"+exams[i].fullScore+"</td>\n" +
+                "            <td>"+exams[i].passScore+"</td>\n" +
+                "        </tr>");
+        }
+    });
+}
+getExams();
 </script>
 </html>

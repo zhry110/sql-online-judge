@@ -11,12 +11,23 @@ public class User {
 
     private boolean isJudgeing;
 
+    private boolean admin;
+
     public User(Integer id, String username, String passwd, String name) {
         this.id = id;
         this.username = username;
         this.passwd = passwd;
         this.name = name;
         isJudgeing = false;
+        admin = false;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
+    public boolean isAdmin() {
+        return admin;
     }
 
     public User() {

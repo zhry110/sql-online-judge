@@ -22,7 +22,7 @@
         </div>
         <div>
             <!--向左对齐-->
-            <ul class="nav navbar-nav navbar-left">
+            <ul class="nav navbar-nav navbar-left" id="nav">
                 <li><a href="javascript:gotoIndex(1)">问题</a></li>
                 <li><a href="javascript:gotoExam(1)">考试</a></li>
                 <li><a href="javascript:gotoRank(1)">排名</a></li>
@@ -91,9 +91,6 @@
             <label class="col-sm-2 control-label">考试</label>
             <div class="col-sm-10">
                 <select id="test" class="selectpicker  form-control" data-live-search="false">
-                    <option value="0">aaa</option>
-                    <option value="1">bbb</option>
-                    <option value="2">ccc</option>
 
                 </select>
             </div>
@@ -240,6 +237,22 @@
             "                        <td id=\"table_state"+tablesNum+"\">等待结果</td>\n" +
             "                    </tr>");
     }
-
+    var getExams = function () {
+        $.get("/exam/examNumbers.do?", {},
+            function (data) {
+                console.log(data);
+                if (data.status == 0) {
+                    var examlist = data.data;
+                    for (var i = 0;i < examlist.length;i++) {
+                        console.log(examlist[i]);
+                        $("#test").append("<option value=\""+examlist[i].id+"\">"+examlist[i].name+"</option>");
+                        $('#test').selectpicker('refresh');
+                    }
+                } else {
+                    alert("获取考试列表 "+data.msg);
+                }
+            });
+    }
+    getExams();
 </script>
 </html>

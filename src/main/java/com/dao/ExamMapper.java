@@ -19,5 +19,7 @@ public interface ExamMapper {
 
     int updateByPrimaryKey(Exam record);
 
-    List<Integer> getExamNumbers();
+
+    List<Exam> getExams();
+
 }

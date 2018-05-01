@@ -19,4 +19,6 @@ public interface TablesForProblemMapper {
     int updateByPrimaryKey(TablesForProblem record);
 
     List<TablesForProblem> selectProblemTables(Long proId);
+
+    int deleteByProId(Long proId);
 }

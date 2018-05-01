@@ -16,4 +16,6 @@ public class Const {
     // 数据库的用户名与密码，需要根据自己的设置
     public static final String USER = "root";
     public static final String PASS = "oshDdjixL0/w";
+
+    public static String CUR_ADMIN = "CURRENT ADMIN";
 }
