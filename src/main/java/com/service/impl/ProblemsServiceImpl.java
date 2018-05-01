@@ -214,7 +214,12 @@ public class ProblemsServiceImpl implements ProblemsService {
             }
 
             //判断answer 是否可以运行
-            String[] sqls = {"use " + problemDatabaseName, answer};
+            List<String> answers = AccessJudge.getLines(answer);
+            String[] sqls = new String[answers.size()];
+            sqls[0] = "use " + problemDatabaseName;
+            for (int i = 1; i < sqls.length;i++) {
+                sqls[i] = answers.get(i - 1);
+            }
             response = Judge.execSql(sqls);
             if (!response.isSuccess()) {
                 problemsMapper.deleteByPrimaryKey(problems.getId());//删除题目
@@ -236,8 +241,6 @@ public class ProblemsServiceImpl implements ProblemsService {
                 }
             }
 
-
-            //插入题目类型
 
             //绑定题目到考试
             ProblemsForExamKey problemsForExamKey = new ProblemsForExamKey();
