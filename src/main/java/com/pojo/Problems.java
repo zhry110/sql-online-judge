@@ -1,5 +1,7 @@
 package com.pojo;
 
+import java.util.Date;
+
 public class Problems {
     private Long id;
 
@@ -9,14 +11,20 @@ public class Problems {
 
     private Integer score;
 
-    private String description;
+    private Boolean type;
 
-    public Problems(Long id, String title, Integer admin, Integer score, String description) {
+    private Boolean isUse;
+
+    private Date createTime;
+
+    public Problems(Long id, String title, Integer admin, Integer score, Boolean type, Boolean isUse, Date createTime) {
         this.id = id;
         this.title = title;
         this.admin = admin;
         this.score = score;
-        this.description = description;
+        this.type = type;
+        this.isUse = isUse;
+        this.createTime = createTime;
     }
 
     public Problems() {
@@ -55,11 +63,27 @@ public class Problems {
         this.score = score;
     }
 
-    public String getDescription() {
-        return description;
+    public Boolean getType() {
+        return type;
     }
 
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+    public void setType(Boolean type) {
+        this.type = type;
+    }
+
+    public Boolean getIsUse() {
+        return isUse;
+    }
+
+    public void setIsUse(Boolean isUse) {
+        this.isUse = isUse;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

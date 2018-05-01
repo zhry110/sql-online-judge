@@ -69,7 +69,7 @@
         </javaClientGenerator>
 
 
-        <table tableName="answer_for_problems" domainObjectName="AnswerForProblems" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
+        <table tableName="problems" domainObjectName="Problems" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>
 
 
         <!--<table tableName="passger" domainObjectName="Passger" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"></table>

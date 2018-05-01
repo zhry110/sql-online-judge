@@ -7,22 +7,29 @@
       <arg column="title" jdbcType="CHAR" javaType="java.lang.String" />
       <arg column="admin" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="score" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="type" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="is_use" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="create_time" jdbcType="DATE" javaType="java.util.Date" />
     </constructor>
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.pojo.Problems" >
+  <resultMap id="ResultMapWithBLOBs" type="com.pojo.ProblemsWithBLOBs" >
     <constructor >
       <idArg column="id" jdbcType="BIGINT" javaType="java.lang.Long" />
       <arg column="title" jdbcType="CHAR" javaType="java.lang.String" />
       <arg column="admin" jdbcType="INTEGER" javaType="java.lang.Integer" />
       <arg column="score" jdbcType="INTEGER" javaType="java.lang.Integer" />
+      <arg column="type" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="is_use" jdbcType="BIT" javaType="java.lang.Boolean" />
+      <arg column="create_time" jdbcType="DATE" javaType="java.util.Date" />
       <arg column="description" jdbcType="LONGVARCHAR" javaType="java.lang.String" />
+      <arg column="answer" jdbcType="LONGVARCHAR" javaType="java.lang.String" />
     </constructor>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, title, admin, score
+    id, title, admin, score, type, is_use, create_time
   </sql>
   <sql id="Blob_Column_List" >
-    description
+    description, answer
   </sql>
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
     select 
@@ -36,13 +43,15 @@
     delete from problems
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.pojo.Problems" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="com.pojo.ProblemsWithBLOBs" >
     insert into problems (id, title, admin, 
-      score, description)
+      score, type, is_use, create_time, 
+      description, answer)
     values (#{id,jdbcType=BIGINT}, #{title,jdbcType=CHAR}, #{admin,jdbcType=INTEGER}, 
-      #{score,jdbcType=INTEGER}, #{description,jdbcType=LONGVARCHAR})
+      #{score,jdbcType=INTEGER}, #{type,jdbcType=BIT}, #{isUse,jdbcType=BIT}, #{createTime,jdbcType=DATE}, 
+      #{description,jdbcType=LONGVARCHAR}, #{answer,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.pojo.Problems" >
+  <insert id="insertSelective" parameterType="com.pojo.ProblemsWithBLOBs" >
     insert into problems
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -57,8 +66,20 @@
       <if test="score != null" >
         score,
       </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="isUse != null" >
+        is_use,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
       <if test="description != null" >
         description,
+      </if>
+      <if test="answer != null" >
+        answer,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -74,12 +95,24 @@
       <if test="score != null" >
         #{score,jdbcType=INTEGER},
       </if>
+      <if test="type != null" >
+        #{type,jdbcType=BIT},
+      </if>
+      <if test="isUse != null" >
+        #{isUse,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
       <if test="description != null" >
         #{description,jdbcType=LONGVARCHAR},
       </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=LONGVARCHAR},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.pojo.Problems" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.pojo.ProblemsWithBLOBs" >
     update problems
     <set >
       <if test="title != null" >
@@ -91,29 +124,48 @@
       <if test="score != null" >
         score = #{score,jdbcType=INTEGER},
       </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=BIT},
+      </if>
+      <if test="isUse != null" >
+        is_use = #{isUse,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=DATE},
+      </if>
       <if test="description != null" >
         description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="answer != null" >
+        answer = #{answer,jdbcType=LONGVARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pojo.Problems" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.pojo.ProblemsWithBLOBs" >
     update problems
     set title = #{title,jdbcType=CHAR},
       admin = #{admin,jdbcType=INTEGER},
       score = #{score,jdbcType=INTEGER},
-      description = #{description,jdbcType=LONGVARCHAR}
+      type = #{type,jdbcType=BIT},
+      is_use = #{isUse,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=DATE},
+      description = #{description,jdbcType=LONGVARCHAR},
+      answer = #{answer,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.pojo.Problems" >
     update problems
     set title = #{title,jdbcType=CHAR},
       admin = #{admin,jdbcType=INTEGER},
-      score = #{score,jdbcType=INTEGER}
+      score = #{score,jdbcType=INTEGER},
+      type = #{type,jdbcType=BIT},
+      is_use = #{isUse,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=DATE}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="getAllProblems" parameterType="Long" resultMap="ResultMapWithBLOBs">
-   select
+    select
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" /> from problems , problems_for_exam where id = pro_id and exam_id=#{testId} ORDER by id asc

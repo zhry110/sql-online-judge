@@ -2,11 +2,9 @@ package com.service.impl;
 
 import com.common.ServerResponse;
 import com.core.Judge;
-import com.dao.AnswerForProblemsMapper;
 import com.dao.ProblemsMapper;
 import com.dao.TablesForProblemMapper;
-import com.pojo.AnswerForProblems;
-import com.pojo.Problems;
+import com.pojo.ProblemsWithBLOBs;
 import com.pojo.TablesForProblem;
 import com.service.AccessJudgeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +18,12 @@ public class AccessJudgeServiceImpl implements AccessJudgeService {
     private ProblemsMapper problemsMapper;
     @Autowired
     private TablesForProblemMapper tablesForProblemMapper;
-    @Autowired
-    private AnswerForProblemsMapper answerForProblemsMapper;
 
     @Override
     public ServerResponse judge(String sql, Integer userId, Long proId) {
         if (userId == null)
             return ServerResponse.createByErrorMessage("ERROR 未知用户ID");
-        Problems problems = problemsMapper.selectByPrimaryKey(proId);
+        ProblemsWithBLOBs problems = problemsMapper.selectByPrimaryKey(proId);
         if (problems == null) {
             return ServerResponse.createByErrorMessage("题目不存在");
         }
@@ -43,11 +39,8 @@ public class AccessJudgeServiceImpl implements AccessJudgeService {
             tableNames[i] = tables.get(i).getUserTableName();
         }
 
-        AnswerForProblems answerForProblems = answerForProblemsMapper.selectByPrimaryKey(proId);
 
-        if (answerForProblems == null)
-            return ServerResponse.createByErrorMessage("该题目缺少正确sql 无法判断");
-        String answer = answerForProblems.getAnswer();
+        String answer = problems.getAnswer();
         if (answer == null) {
             return ServerResponse.createByErrorMessage("该题目缺少正确sql 无法判断");
         }

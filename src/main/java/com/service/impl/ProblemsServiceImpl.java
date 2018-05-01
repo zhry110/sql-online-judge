@@ -33,29 +33,23 @@ public class ProblemsServiceImpl implements ProblemsService {
     @Autowired
     private TablesForProblemMapper tablesForProblemMapper;
     @Autowired
-    private AnswerForProblemsMapper answerForProblemsMapper;
-    @Autowired
-    private TypeForProblemsMapper typeForProblemsMapper;
-    @Autowired
     private ProblemsForExamMapper problemsForExamMapper;
-    @Override
-    public PageInfo getProblems(Long testId,Integer pageNum,Integer pageSize,Integer uid) {
 
-        PageHelper.startPage(pageNum,pageSize);
-        List<Problems> lists =  problemsMapper.getAllProblems(testId);
+    @Override
+    public PageInfo getProblems(Long testId, Integer pageNum, Integer pageSize, Integer uid) {
+
+        PageHelper.startPage(pageNum, pageSize);
+        List<Problems> lists = problemsMapper.getAllProblems(testId);
         List<ProblemsVo> res = new ArrayList<>();
-        for (Problems p : lists)
-        {
+        for (Problems p : lists) {
             ProblemsVo passListVo = new ProblemsVo();
             passListVo.setId(p.getId());
             passListVo.setScore(p.getScore());
             passListVo.setTitle(p.getTitle());
             Admin admin = adminMapper.selectByPrimaryKey(p.getAdmin());
-            if (admin != null)
-            {
+            if (admin != null) {
                 passListVo.setSourse(admin.getName());
-            } else
-            {
+            } else {
                 passListVo.setSourse(" ");
             }
             Long allCount = userAcceptMapper.allCount(p.getId());
@@ -69,7 +63,7 @@ public class ProblemsServiceImpl implements ProblemsService {
                     passListVo.setCorrect(df.format((acCount / (allCount + 0.0)) * 100) + "%");
             }
             if (uid != null)
-                if (userAcceptMapper.selectAccept(p.getId(),uid) > 0)
+                if (userAcceptMapper.selectAccept(p.getId(), uid) > 0)
                     passListVo.setAccept(true);
             res.add(passListVo);
         }
@@ -80,7 +74,7 @@ public class ProblemsServiceImpl implements ProblemsService {
 
     @Override
     public ProblemDetailVo getProblemDetail(Long proId) {
-        Problems problem = problemsMapper.selectByPrimaryKey(proId);
+        ProblemsWithBLOBs problem = problemsMapper.selectByPrimaryKey(proId);
         if (problem == null)
             return null;
         ProblemDetailVo problemDetailVo = new ProblemDetailVo();
@@ -91,31 +85,23 @@ public class ProblemsServiceImpl implements ProblemsService {
         //problemDetailVo.setTable(TableInfo.getTableInfo("exam"));
         List<TablesForProblem> list = tablesForProblemMapper.selectProblemTables(proId);
         String tableInfo = "";
-        if (list != null)
-        {
-            for (TablesForProblem tablesForProblem : list)
-            {
-                tableInfo += TableInfo.getTableInfo(tablesForProblem.getUserTableName(),proId);
+        if (list != null) {
+            for (TablesForProblem tablesForProblem : list) {
+                tableInfo += TableInfo.getTableInfo(tablesForProblem.getUserTableName(), proId);
             }
         }
 
         //获取答案
-        AnswerForProblems answerForProblems = answerForProblemsMapper.selectByPrimaryKey(proId);
-        TypeForProblems typeForProblems = typeForProblemsMapper.selectByPrimaryKey(proId);
-
         tableInfo += "<br>对于上述测试用例，正确输出为：";
-        if (answerForProblems == null) {
-            tableInfo += "<br>无法获取输出，该题目答案sql为空";
+        Boolean type = problem.getType();
+        if (type == null) {
+            tableInfo += "<br>错误的题目类型";
+        } else if (type) {
+            tableInfo += "<br>非SELECT题型，无输出";
         } else {
-            if (typeForProblems != null) {
-                if (typeForProblems.getType()) {
-                    tableInfo += "<br>非SELECT题型，无输出";
-                } else {
-                    tableInfo += ("<br>" + new Problem(proId).getAnswer(answerForProblems.getAnswer()));
-                }
-            }
-
+            tableInfo += ("<br>" + new Problem(proId).getAnswer(problem.getAnswer()));
         }
+
         problemDetailVo.setTable(tableInfo);
         return problemDetailVo;
     }
@@ -151,7 +137,7 @@ public class ProblemsServiceImpl implements ProblemsService {
 
             JSONArray tables = jsonObject.getJSONArray("tables");
             String[] tableNames = new String[tables.length()];
-            for (int i = 0; i < tables.length();i++) {
+            for (int i = 0; i < tables.length(); i++) {
                 String tableName = tables.getString(i);
                 if (checkNull(tableName))
                     return ServerResponse.createByErrorMessage("操作表名称不能为空");
@@ -160,7 +146,7 @@ public class ProblemsServiceImpl implements ProblemsService {
 
             JSONArray tableSqls = jsonObject.getJSONArray("tablesqls");
             String[] tableSqlsSqls = new String[tableSqls.length()];
-            for (int i = 0; i < tableSqls.length();i++) {
+            for (int i = 0; i < tableSqls.length(); i++) {
                 String tableSql = tableSqls.getString(i);
                 if (checkNull(tableSql))
                     return ServerResponse.createByErrorMessage("操作表创建语句不能为空");
@@ -169,19 +155,21 @@ public class ProblemsServiceImpl implements ProblemsService {
 
             JSONArray testCases = jsonObject.getJSONArray("testCase");
             String[] testCaseSqls = new String[testCases.length()];
-            for (int i = 0; i < testCases.length();i++) {
+            for (int i = 0; i < testCases.length(); i++) {
                 String testCase = testCases.getString(i);
                 if (checkNull(testCase))
                     return ServerResponse.createByErrorMessage("测试用例不能为空");
                 testCaseSqls[i] = testCase;
             }
 
-            Problems problems = new Problems();
+            ProblemsWithBLOBs problems = new ProblemsWithBLOBs();
             problems.setId(null);
             problems.setTitle(title);
             problems.setAdmin(0);
             problems.setDescription(des);
             problems.setScore(score);
+            problems.setAnswer(answer);
+            problems.setType(!select);
             if (problemsMapper.insert(problems) < 0) {
                 return ServerResponse.createByErrorMessage("插入题目至数据库时遇到错误");
             }
@@ -192,53 +180,53 @@ public class ProblemsServiceImpl implements ProblemsService {
             ServerResponse response = Judge.createDatabase(problemDatabaseName);
             if (!response.isSuccess()) {
                 problemsMapper.deleteByPrimaryKey(problems.getId());
-                return ServerResponse.createByErrorMessage("为题目创建数据库失败 原因:"+response.getMsg());
+                return ServerResponse.createByErrorMessage("为题目创建数据库失败 原因:" + response.getMsg());
             }
 
             //创建测试用例
-            for (int testCase = 0; testCase < testCaseSqls.length;testCase++) {
-                response = createTables(tableNames,problemDatabaseName,tableSqlsSqls,problems);
+            for (int testCase = 0; testCase < testCaseSqls.length; testCase++) {
+                response = createTables(tableNames, problemDatabaseName, tableSqlsSqls, problems);
                 if (!response.isSuccess()) {
                     problemsMapper.deleteByPrimaryKey(problems.getId());//删除题目
                     if (!Judge.dropDatabase(problemDatabaseName).isSuccess()) { //删除题目数据库
                         System.out.println("ERROR in drop Database");
                     }
-                    return ServerResponse.createByErrorMessage("创建测试用例"+(testCase + 1)+"时，创建表失败 "+response.getMsg());
+                    return ServerResponse.createByErrorMessage("创建测试用例" + (testCase + 1) + "时，创建表失败 " + response.getMsg());
                 }
                 List<String> sqls = AccessJudge.getLines(testCaseSqls[testCase]);
-                sqls.add(0,"use "+problemDatabaseName);
+                sqls.add(0, "use " + problemDatabaseName);
                 response = Judge.execSql(sqls);
                 if (!response.isSuccess()) {
                     problemsMapper.deleteByPrimaryKey(problems.getId());//删除题目
                     if (!Judge.dropDatabase(problemDatabaseName).isSuccess()) { //删除题目数据库
                         System.out.println("ERROR in drop Database");
                     }
-                    return ServerResponse.createByErrorMessage("创建测试用例"+(testCase + 1)+"时，运行测试用例生成sql时失败"+response.getMsg());
+                    return ServerResponse.createByErrorMessage("创建测试用例" + (testCase + 1) + "时，运行测试用例生成sql时失败" + response.getMsg());
                 }
-                response = copyTables(tableNames,problemDatabaseName,testCase);
+                response = copyTables(tableNames, problemDatabaseName, testCase);
                 if (!response.isSuccess()) {
                     problemsMapper.deleteByPrimaryKey(problems.getId());//删除题目
                     if (!Judge.dropDatabase(problemDatabaseName).isSuccess()) { //删除题目数据库
                         System.out.println("ERROR in drop Database");
                     }
-                    return ServerResponse.createByErrorMessage("创建测试用例"+(testCase + 1)+"时，"+response.getMsg());
+                    return ServerResponse.createByErrorMessage("创建测试用例" + (testCase + 1) + "时，" + response.getMsg());
                 }
             }
 
             //判断answer 是否可以运行
-            String[] sqls = {"use "+problemDatabaseName,answer};
+            String[] sqls = {"use " + problemDatabaseName, answer};
             response = Judge.execSql(sqls);
             if (!response.isSuccess()) {
                 problemsMapper.deleteByPrimaryKey(problems.getId());//删除题目
                 if (!Judge.dropDatabase(problemDatabaseName).isSuccess()) { //删除题目数据库
                     System.out.println("ERROR in drop Database");
                 }
-                return ServerResponse.createByErrorMessage("给出的answer无法运行"+response.getMsg());
+                return ServerResponse.createByErrorMessage("给出的answer无法运行" + response.getMsg());
             }
 
             //如果改变表数据 则恢复
             if (!select) {
-                response = restoreTables(tableNames,problemDatabaseName,testCaseSqls.length - 1);
+                response = restoreTables(tableNames, problemDatabaseName, testCaseSqls.length - 1);
                 if (!response.isSuccess()) {
                     problemsMapper.deleteByPrimaryKey(problems.getId());//删除题目
                     if (!Judge.dropDatabase(problemDatabaseName).isSuccess()) { //删除题目数据库
@@ -250,16 +238,6 @@ public class ProblemsServiceImpl implements ProblemsService {
 
 
             //插入题目类型
-            TypeForProblems typeForProblems = new TypeForProblems();
-            typeForProblems.setProId(problems.getId());
-            typeForProblems.setType(!select);
-            if (typeForProblemsMapper.insert(typeForProblems) < 1) {
-                problemsMapper.deleteByPrimaryKey(problems.getId());//删除题目
-                if (!Judge.dropDatabase(problemDatabaseName).isSuccess()) { //删除题目数据库
-                    System.out.println("ERROR in drop Database");
-                }
-                return ServerResponse.createByErrorMessage("添加题目类型至类型表失败");
-            }
 
             //绑定题目到考试
             ProblemsForExamKey problemsForExamKey = new ProblemsForExamKey();
@@ -274,7 +252,7 @@ public class ProblemsServiceImpl implements ProblemsService {
             }
 
             //添加操作表至 TablesForProblem
-            for (int i = 0; i < tableNames.length;i++) {
+            for (int i = 0; i < tableNames.length; i++) {
                 TablesForProblem tablesForProblem = new TablesForProblem();
                 tablesForProblem.setAccess(0);
                 tablesForProblem.setProId(problems.getId().intValue());// TODO: 2018/4/30 change Integer to Long
@@ -288,60 +266,50 @@ public class ProblemsServiceImpl implements ProblemsService {
                 }
             }
 
-            //添加答案至 answer表
-
-            AnswerForProblems answerForProblems = new AnswerForProblems();
-            answerForProblems.setProId(problems.getId());
-            answerForProblems.setAnswer(answer);
-
-            if (answerForProblemsMapper.insert(answerForProblems) < 1) {
-                problemsMapper.deleteByPrimaryKey(problems.getId());//删除题目
-                if (!Judge.dropDatabase(problemDatabaseName).isSuccess()) { //删除题目数据库
-                    System.out.println("ERROR in drop Database");
-                }
-                return ServerResponse.createByErrorMessage("添加答案至答案表失败");
-            }
-
         } catch (Exception e) {
             return ServerResponse.createByErrorMessage(e.getMessage());
         }
         return ServerResponse.createBySuccess();
     }
-    private ServerResponse createTables(String[] tableNames,String problemDatabaseName,String[] tableSqlsSqls,Problems problems) {
+
+    private ServerResponse createTables(String[] tableNames, String problemDatabaseName, String[] tableSqlsSqls, Problems problems) {
         ServerResponse response;
-        for (int i = 0; i < tableNames.length;i++) {
-            response = Judge.dropTable(problemDatabaseName,tableNames[i]);
+        for (int i = 0; i < tableNames.length; i++) {
+            response = Judge.dropTable(problemDatabaseName, tableNames[i]);
             if (!response.isSuccess()) {
-                return ServerResponse.createByErrorMessage(tableNames[i]+"失败 原因:"+response.getMsg());
+                return ServerResponse.createByErrorMessage(tableNames[i] + "失败 原因:" + response.getMsg());
             }
-            response = Judge.createTableWithSql(problemDatabaseName,tableSqlsSqls[i]);
+            response = Judge.createTableWithSql(problemDatabaseName, tableSqlsSqls[i]);
             if (!response.isSuccess()) {
-                return ServerResponse.createByErrorMessage("创建操作表"+tableNames[i]+"失败 原因:"+response.getMsg());
+                return ServerResponse.createByErrorMessage("创建操作表" + tableNames[i] + "失败 原因:" + response.getMsg());
             }
         }
         return ServerResponse.createBySuccess();
     }
-    private ServerResponse copyTables(String[] tableNames,String problemDatabaseName,int testCase) {
-        ServerResponse response;
-        for (String tableName : tableNames) {
-            response = Judge.copyTable(problemDatabaseName,tableName,problemDatabaseName,tableName + testCase);
-            if (!response.isSuccess()) {
-                return ServerResponse.createByErrorMessage("拷贝表发送错误 "+response.getMsg());
-            }
-        }
-        return ServerResponse.createBySuccess();
-    }
-    private ServerResponse restoreTables(String[] tableNames,String problemDatabaseName,int testCase) {
+
+    private ServerResponse copyTables(String[] tableNames, String problemDatabaseName, int testCase) {
         ServerResponse response;
         for (String tableName : tableNames) {
-            response = Judge.copyTable(problemDatabaseName,tableName + testCase,
-                    problemDatabaseName,tableName);
+            response = Judge.copyTable(problemDatabaseName, tableName, problemDatabaseName, tableName + testCase);
             if (!response.isSuccess()) {
-                return ServerResponse.createByErrorMessage("拷贝表发送错误 "+response.getMsg());
+                return ServerResponse.createByErrorMessage("拷贝表发送错误 " + response.getMsg());
             }
         }
         return ServerResponse.createBySuccess();
     }
+
+    private ServerResponse restoreTables(String[] tableNames, String problemDatabaseName, int testCase) {
+        ServerResponse response;
+        for (String tableName : tableNames) {
+            response = Judge.copyTable(problemDatabaseName, tableName + testCase,
+                    problemDatabaseName, tableName);
+            if (!response.isSuccess()) {
+                return ServerResponse.createByErrorMessage("拷贝表发送错误 " + response.getMsg());
+            }
+        }
+        return ServerResponse.createBySuccess();
+    }
+
     private boolean checkNull(String string) {
         if (string == null) {
             return true;

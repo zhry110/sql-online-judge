@@ -2,16 +2,11 @@ package com.controller.problem;
 
 import com.common.Const;
 import com.common.ServerResponse;
-import com.core.ReadOnlyJudge;
-import com.pojo.Problems;
 import com.pojo.User;
 import com.service.JudgeService;
 import com.service.ProblemsService;
-import com.service.ReadOnlyJudgeService;
 import com.service.UserPostService;
 import com.vo.ProblemDetailVo;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-import java.sql.SQLException;
 
 @Controller
 @RequestMapping("/problems/")
@@ -69,7 +63,7 @@ public class ProblemController {
             return ServerResponse.createByErrorMessage("你的上一个提交正在判定，请稍等");
         }
         user.setJudgeing(true);
-        ServerResponse response = judgeService.doJudge(sql,user.getId(),proId);
+        ServerResponse response = judgeService.doJudge(sql, user.getId(), proId);
         userPostService.postSql(proId,user.getId(),sql,response.isSuccess());
         user.setJudgeing(false);
         return response;

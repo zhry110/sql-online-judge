@@ -1,21 +1,22 @@
 package com.dao;
 
 import com.pojo.Problems;
+import com.pojo.ProblemsWithBLOBs;
 
 import java.util.List;
 
 public interface ProblemsMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(Problems record);
+    int insert(ProblemsWithBLOBs record);
 
-    int insertSelective(Problems record);
+    int insertSelective(ProblemsWithBLOBs record);
 
-    Problems selectByPrimaryKey(Long id);
+    ProblemsWithBLOBs selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(Problems record);
+    int updateByPrimaryKeySelective(ProblemsWithBLOBs record);
 
-    int updateByPrimaryKeyWithBLOBs(Problems record);
+    int updateByPrimaryKeyWithBLOBs(ProblemsWithBLOBs record);
 
     int updateByPrimaryKey(Problems record);
 
