@@ -127,4 +127,7 @@
       pass_score = #{passScore,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="getExamNumbers" resultSets="Integer">
+    select id from exam
+  </select>
 </mapper>

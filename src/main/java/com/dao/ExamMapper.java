@@ -2,6 +2,8 @@ package com.dao;
 
 import com.pojo.Exam;
 
+import java.util.List;
+
 public interface ExamMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -16,4 +18,6 @@ public interface ExamMapper {
     int updateByPrimaryKeyWithBLOBs(Exam record);
 
     int updateByPrimaryKey(Exam record);
+
+    List<Integer> getExamNumbers();
 }

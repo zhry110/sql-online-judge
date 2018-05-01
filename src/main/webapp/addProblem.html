@@ -240,6 +240,17 @@
             "                        <td id=\"table_state"+tablesNum+"\">等待结果</td>\n" +
             "                    </tr>");
     }
+    var getExams = function () {
+        $.get("/exams/examNumbers.do?", {json: JSON.stringify(json)},
+            function (data) {
+                console.log(data);
+                if (data.status == 0) {
+                    alert("发布题目成功");
+                } else {
+                    alert("发布题目失败 "+data.msg);
+                }
+            });
+    }
 
 </script>
 </html>
