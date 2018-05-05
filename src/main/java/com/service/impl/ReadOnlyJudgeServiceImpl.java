@@ -26,6 +26,9 @@ public class ReadOnlyJudgeServiceImpl implements ReadOnlyJudgeService {
         ProblemsWithBLOBs problems = problemsMapper.selectByPrimaryKey(proId);
         if (problems == null)
             return ServerResponse.createByErrorMessage("题目不存在");
+        if (!problems.getIsUse()) {
+            return ServerResponse.createByErrorMessage("题目已删除");
+        }
         List<TablesForProblem> lists = tablesForProblemMapper.selectProblemTables(proId);
         if (lists.isEmpty())
             return ServerResponse.createByErrorMessage("该题目无测试表");

@@ -78,10 +78,14 @@ var getExams = function () {
         console.log(data);
         var exams = data.data;
         for (var i = 0;i < exams.length;i++) {
+            var start = new Date();
+            start.setTime(exams[i].startTime);
+            var end = new Date();
+            end.setTime(exams[i].endTime);
             $("#examlist").append("<tr>\n" +
-                "            <td>"+exams[i].name+"</td>\n" +
-                "            <td>"+Date(exams[i].startTime).toLocaleString() +"</td>\n" +
-                "            <td>"+Date(exams[i].endTime).toLocaleString() +"</td>\n" +
+                "            <td><a href=\"examProblems.html?examId="+exams[i].id+"\">"+exams[i].name+"</a></td>\n" +
+                "            <td>"+start.toLocaleString() +"</td>\n" +
+                "            <td>"+end.toLocaleString() +"</td>\n" +
                 "            <td>"+exams[i].fullScore+"</td>\n" +
                 "            <td>"+exams[i].passScore+"</td>\n" +
                 "        </tr>");

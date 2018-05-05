@@ -78,4 +78,12 @@ public class UserController {
             uid = user.getId();
         return userService.rankTop50(uid);
     }
+    @RequestMapping(value = "changePassword.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse changePasswd(String old,String now,HttpSession session) {
+        User user = (User) session.getAttribute(Const.CUR_USER);
+        if (user == null)
+            return ServerResponse.createByErrorMessage("未登录");
+        return userService.changePasswd(old,now,user);
+    }
 }

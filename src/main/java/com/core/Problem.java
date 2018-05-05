@@ -4,6 +4,8 @@ import com.common.Const;
 import com.util.NewBorder;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Problem {
     private Long proId;

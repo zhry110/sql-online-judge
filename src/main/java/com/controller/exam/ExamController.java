@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
+;
 import java.util.Date;
 
 @Controller
@@ -74,5 +73,9 @@ public class ExamController {
         }
         return examService.addExam(name,full,pass,startDate,endDate);
     }
-
+    @RequestMapping(value = "getExam.do",method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse getExam(Integer examId) {
+        return examService.getExam(examId);
+    }
 }

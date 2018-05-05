@@ -89,5 +89,19 @@ public class UserServiceImpl implements UserService {
         return ServerResponse.createBySuccess(userList);
     }
 
+    @Override
+    public ServerResponse changePasswd(String old, String now,User user) {
+        User real = userMapper.selectByPrimaryKey(user.getId());
+        if (real == null)
+            return ServerResponse.createByErrorMessage("用户不存在");
+        if (!real.getPasswd().equals(old)) {
+            return ServerResponse.createByErrorMessage("旧密码错误");
+        }
+        real.setPasswd(now);
+        if (userMapper.updateByPrimaryKey(real) > 0)
+            return ServerResponse.createBySuccess();
+        return ServerResponse.createByErrorMessage("修改失败 无法更新密码");
+    }
+
 
 }

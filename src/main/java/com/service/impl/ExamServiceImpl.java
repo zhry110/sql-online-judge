@@ -37,4 +37,9 @@ public class ExamServiceImpl implements ExamService{
             return ServerResponse.createBySuccess();
         return ServerResponse.createByErrorMessage("插入考试失败");
     }
+
+    @Override
+    public ServerResponse getExam(Integer examId) {
+        return ServerResponse.createBySuccess(examMapper.selectByPrimaryKey(examId));
+    }
 }

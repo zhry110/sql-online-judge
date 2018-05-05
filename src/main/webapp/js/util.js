@@ -35,8 +35,7 @@ var getUserInfo = function () {
        if (data.status == 0)
        {
            $("#menuname").text(data.data.name);
-           $("#menu").append("<li><a href=\"self.html\">"+data.data.name+"</a></li> <li class=\"divider\"></li>\n" +
-               "                    <li><a style='color: #ff0000' href=\"javascript:logout()\">注销</a></li><li class=\"divider\"></li>\n" +
+           $("#menu").append("<li><a style='color: #ff0000' href=\"javascript:logout()\">注销</a></li><li class=\"divider\"></li>\n" +
                "                    <li><a href=\"changepasswd.html\">修改密码</a></li>");
            if (data.data.admin) {
                isAdmin = true;
@@ -61,9 +60,8 @@ var getUserInfo = function () {
 }
 
 getUserInfo();
-
-var getProblemsByPagefunction = function(pageNum) {
-    $.get("/problems/problems.do?",{testId:0,pageSize:50,pageNum:pageNum},
+var getProblems = function (pageNum,examId) {
+    $.get("/problems/problems.do?",{testId:examId,pageSize:50,pageNum:pageNum},
         function (data) {
             $("#container").remove();
             var deleteTitle = "";
@@ -158,6 +156,9 @@ var getProblemsByPagefunction = function(pageNum) {
 
         });
 }
+var getProblemsByPagefunction = function(pageNum) {
+    getProblems(pageNum,0);
+}
 
 var deleteProblem = function (id) {
     $.get("/problems/delete.do?",{proId:id},function (data) {
@@ -171,25 +172,4 @@ var deleteProblem = function (id) {
             alert("删除失败"+data.msg);
         }
     });
-}
-
-
-$(function(){
-    setInterval("getTime();",1000); //每隔一秒运行一次
-})
-//取得系统当前时间
-function getTime(){
-    var nowDate = new Date();
-    var year = nowDate.getFullYear();
-    var month = nowDate.getMonth()+1;
-    month = month>9 ? month : "0" + month;
-    var date = nowDate.getDate();
-    date = date>9 ? date : "0" + date;
-    var hour = nowDate.getHours();
-    hour = hour>9 ? hour : "0" + hour;
-    var miunte = nowDate.getMinutes();
-    miunte = miunte>9 ? miunte : "0" + miunte;
-    var second = nowDate.getSeconds();
-    second = second>9 ? second : "0" + second;
-    $("#showDate").text(hour+":"+miunte+":"+second);
 }

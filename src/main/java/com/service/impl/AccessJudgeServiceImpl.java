@@ -27,6 +27,9 @@ public class AccessJudgeServiceImpl implements AccessJudgeService {
         if (problems == null) {
             return ServerResponse.createByErrorMessage("题目不存在");
         }
+        if (!problems.getIsUse()) {
+            return ServerResponse.createByErrorMessage("题目已删除");
+        }
         List<TablesForProblem> tables = tablesForProblemMapper.selectProblemTables(proId);
         if (tables == null) {
             return ServerResponse.createByErrorMessage("该题目无操作表 无法判定 请联系出题者");

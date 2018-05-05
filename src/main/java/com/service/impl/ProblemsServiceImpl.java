@@ -81,6 +81,8 @@ public class ProblemsServiceImpl implements ProblemsService {
         ProblemsWithBLOBs problem = problemsMapper.selectByPrimaryKey(proId);
         if (problem == null)
             return null;
+        if (!problem.getIsUse())
+            return null;
         ProblemDetailVo problemDetailVo = new ProblemDetailVo();
         problemDetailVo.setDescription(problem.getDescription());
         problemDetailVo.setId(proId);
@@ -175,6 +177,7 @@ public class ProblemsServiceImpl implements ProblemsService {
             problems.setAnswer(answer);
             problems.setType(!select);
             problems.setAdmin(admin.getId());
+            problems.setIsUse(true);
             if (problemsMapper.insert(problems) < 0) {
                 return ServerResponse.createByErrorMessage("插入题目至数据库时遇到错误");
             }
@@ -282,9 +285,11 @@ public class ProblemsServiceImpl implements ProblemsService {
 
     @Override
     public ServerResponse delete(Long proId) {
-        problemsMapper.deleteByPrimaryKey(proId);
-        problemsForExamMapper.deleteByProId(proId);
-        tablesForProblemMapper.deleteByProId(proId);
+        ProblemsWithBLOBs problem = problemsMapper.selectByPrimaryKey(proId);
+        if (problem == null)
+            return ServerResponse.createByErrorMessage("题目不存在");
+        problem.setIsUse(false);
+        problemsMapper.updateByPrimaryKey(problem);
         return ServerResponse.createBySuccess();
     }
 

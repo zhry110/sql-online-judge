@@ -10,4 +10,6 @@ public interface ExamService {
     ServerResponse getExams();
 
     ServerResponse addExam(String name, Integer full, Integer pass, Date startDate, Date endDate);
+
+    ServerResponse getExam(Integer examId);
 }

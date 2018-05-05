@@ -10,4 +10,5 @@ public interface UserService {
 
     ServerResponse rankTop50(Integer uid);
 
+    ServerResponse changePasswd(String old, String now,User user);
 }
