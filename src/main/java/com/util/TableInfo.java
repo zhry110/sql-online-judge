@@ -1,6 +1,7 @@
 package com.util;
 
 import com.common.Const;
+import com.core.ConnectionManager;
 
 import java.sql.*;
 
@@ -10,16 +11,11 @@ public class TableInfo {
         if (tableName == null)
             return "";
         String ret = "<b>"+tableName + "</b><br>";
-        try {
-            Class.forName(Const.JDBC_DRIVER);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         Connection connection = null;
         Statement stmt = null;
         ResultSet rs = null;
         try {
-            connection = DriverManager.getConnection(Const.DB_URL, Const.USER, Const.PASS);
+            connection = ConnectionManager.getInstance();
             String sql = "use problem"+proId;
             stmt = connection.createStatement();
             stmt.execute(sql);
@@ -52,8 +48,6 @@ public class TableInfo {
         }
         finally {
             try {
-                if (connection != null)
-                    connection.close();
                 if (rs != null)
                     rs.close();
                 if (stmt != null)

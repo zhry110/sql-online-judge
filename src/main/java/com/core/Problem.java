@@ -19,13 +19,16 @@ public class Problem {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        Connection connection = null;
+        ResultSet rs = null;
+        Statement stmt = null;
         try {
-            Connection connection = DriverManager.getConnection(Const.DB_URL, Const.USER, Const.PASS);
+            connection = ConnectionManager.getInstance();
             String sql = "use " + Judge.getProblemDatabaseName(proId);
-            Statement stmt = connection.createStatement();
+            stmt = connection.createStatement();
             stmt.execute(sql);
             sql = answer;
-            ResultSet rs = stmt.executeQuery(sql);
+            rs = stmt.executeQuery(sql);
             ResultSetMetaData resultSetMetaData = rs.getMetaData();
             //System.out.println(resultSetMetaData.getColumnName(1));
             //System.out.println(resultSetMetaData.getColumnTypeName(1));
@@ -47,12 +50,22 @@ public class Problem {
             // 展开结果集数据库
             ret += NewBorder.addBorder(temp);
             // 完成后关闭
-            rs.close();
-            stmt.close();
-            connection.close();
+
+
         } catch (SQLException e) {
             e.printStackTrace();
             return "ERROR :" + e.getMessage();
+        }
+        finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (stmt != null)
+                    stmt.close();
+            } catch (Exception e)
+            {
+
+            }
         }
         return ret;
     }

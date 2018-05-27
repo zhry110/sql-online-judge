@@ -50,16 +50,10 @@ public class Judge {
     }
 
     public static ServerResponse createDatabase(String name) {
-        Connection connection = null;
+        Connection connection ;
         Statement statement = null;
         try {
-            Class.forName(Const.JDBC_DRIVER);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return ServerResponse.createByErrorMessage(e.getMessage());
-        }
-        try {
-            connection = DriverManager.getConnection(Const.DB_URL, Const.USER, Const.PASS);
+            connection = ConnectionManager.getInstance();
             statement = connection.createStatement();
             statement.execute("CREATE DATABASE IF NOT EXISTS " + name + " DEFAULT CHARSET utf8");
             return ServerResponse.createBySuccess();
@@ -70,8 +64,6 @@ public class Judge {
             try {
                 if (statement != null)
                     statement.close();
-                if (connection != null)
-                    connection.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -107,13 +99,7 @@ public class Judge {
         Connection connection = null;
         Statement statement = null;
         try {
-            Class.forName(Const.JDBC_DRIVER);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return ServerResponse.createByErrorMessage(e.getMessage());
-        }
-        try {
-            connection = DriverManager.getConnection(Const.DB_URL, Const.USER, Const.PASS);
+            connection = ConnectionManager.getInstance();
             statement = connection.createStatement();
             for (int i = 0; i < sql.length; i++)
                 statement.execute(sql[i]);
@@ -123,8 +109,6 @@ public class Judge {
             return ServerResponse.createByErrorMessage(e.getMessage());
         } finally {
             try {
-                if (connection != null)
-                    connection.close();
                 if (statement != null)
                     statement.close();
             }catch (Exception e) {
