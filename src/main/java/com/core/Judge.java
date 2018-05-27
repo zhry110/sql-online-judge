@@ -51,6 +51,7 @@ public class Judge {
 
     public static ServerResponse createDatabase(String name) {
         Connection connection = null;
+        Statement statement = null;
         try {
             Class.forName(Const.JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
@@ -59,20 +60,21 @@ public class Judge {
         }
         try {
             connection = DriverManager.getConnection(Const.DB_URL, Const.USER, Const.PASS);
-            Statement statement = connection.createStatement();
+            statement = connection.createStatement();
             statement.execute("CREATE DATABASE IF NOT EXISTS " + name + " DEFAULT CHARSET utf8");
-            statement.close();
-            connection.close();
             return ServerResponse.createBySuccess();
         } catch (SQLException e) {
-            if (connection != null)
-                try {
-                    connection.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
             e.printStackTrace();
             return ServerResponse.createByErrorMessage(e.getMessage());
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (connection != null)
+                    connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -103,6 +105,7 @@ public class Judge {
 
     public static ServerResponse execSql(String[] sql) {
         Connection connection = null;
+        Statement statement = null;
         try {
             Class.forName(Const.JDBC_DRIVER);
         } catch (ClassNotFoundException e) {
@@ -111,22 +114,22 @@ public class Judge {
         }
         try {
             connection = DriverManager.getConnection(Const.DB_URL, Const.USER, Const.PASS);
-            Statement statement = connection.createStatement();
+            statement = connection.createStatement();
             for (int i = 0; i < sql.length; i++)
                 statement.execute(sql[i]);
-            statement.close();
-            connection.close();
             return ServerResponse.createBySuccess();
         } catch (SQLException e) {
-            if (connection != null)
-                try {
-                    connection.close();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                    return ServerResponse.createByErrorMessage(e.getMessage());
-                }
             e.printStackTrace();
             return ServerResponse.createByErrorMessage(e.getMessage());
+        } finally {
+            try {
+                if (connection != null)
+                    connection.close();
+                if (statement != null)
+                    statement.close();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
     public static ServerResponse execSql(List<String> sqls) {
@@ -151,12 +154,40 @@ public class Judge {
 
     public static ServerResponse copyTestCaseAndJudge(String[] tables, Long proId, boolean access, String sql, String answer, Integer userId) {
         ServerResponse response;
-        Judge judge;
+        Judge judge = null;
         try {
             if (access) {
                 judge = new AccessJudge(userId);
             } else {
                 judge = new ReadOnlyJudge(userId);
+            }
+            for (int test = 0; test < 10; test++) // 测试用例默认不超过10个
+            {
+                if (Judge.tableExist(getProblemDatabaseName(proId), tables[0] + test)) {
+                    ServerResponse resCopy = Judge.copyTestCase(tables, test, getProblemDatabaseName(proId), getUserDatabaseName(userId));
+                    if (!resCopy.isSuccess()) {
+                        return ServerResponse.createByErrorMessage("系统发生故障 无法拷贝表"+resCopy.getMsg());
+                    }
+                    if (access) {
+                        resCopy = Judge.copyTestCase(tables, test, getProblemDatabaseName(proId), getUserSystemDatabaseName(userId));
+                        if (!resCopy.isSuccess()) {
+                            return ServerResponse.createByErrorMessage("系统发生故障 无法拷贝表"+resCopy.getMsg());
+                        }
+                    }
+                    String answerDatabaseName = getUserDatabaseName(userId);
+                    if (access) {
+                        answerDatabaseName = getUserSystemDatabaseName(userId);
+                    }
+                    if (!(response = judge.doJudge(sql, answer, getUserDatabaseName(userId), answerDatabaseName, tables)).isSuccess()) {
+                        return response;
+                    }
+                } else {
+                    System.out.println("表不存在");
+                    if (test == 0) {
+                        return ServerResponse.createByErrorMessage("该题目的测试用例为空 无法判定");
+                    }
+                    break;
+                }
             }
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -165,37 +196,9 @@ public class Judge {
             e.printStackTrace();
             return ServerResponse.createByErrorMessage(e.getMessage());
         }
-        for (int test = 0; test < 10; test++) // 测试用例默认不超过10个
-        {
-            if (Judge.tableExist(getProblemDatabaseName(proId), tables[0] + test)) {
-                ServerResponse resCopy = Judge.copyTestCase(tables, test, getProblemDatabaseName(proId), getUserDatabaseName(userId));
-                if (!resCopy.isSuccess()) {
-                    judge.close();
-                    return ServerResponse.createByErrorMessage("系统发生故障 无法拷贝表"+resCopy.getMsg());
-                }
-                if (access) {
-                    resCopy = Judge.copyTestCase(tables, test, getProblemDatabaseName(proId), getUserSystemDatabaseName(userId));
-                    if (!resCopy.isSuccess()) {
-                        judge.close();
-                        return ServerResponse.createByErrorMessage("系统发生故障 无法拷贝表"+resCopy.getMsg());
-                    }
-                }
-                String answerDatabaseName = getUserDatabaseName(userId);
-                if (access) {
-                    answerDatabaseName = getUserSystemDatabaseName(userId);
-                }
-                if (!(response = judge.doJudge(sql, answer, getUserDatabaseName(userId), answerDatabaseName, tables)).isSuccess()) {
-                    judge.close();
-                    return response;
-                }
-            } else {
-                System.out.println("表不存在");
-                if (test == 0) {
-                    judge.close();
-                    return ServerResponse.createByErrorMessage("该题目的测试用例为空 无法判定");
-                }
-                break;
-            }
+        finally {
+            if (judge != null)
+                judge.close();
         }
         return ServerResponse.createBySuccessMessage("Accept");
     }

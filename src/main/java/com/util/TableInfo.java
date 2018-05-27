@@ -15,13 +15,16 @@ public class TableInfo {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        Connection connection = null;
+        Statement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection connection = DriverManager.getConnection(Const.DB_URL, Const.USER, Const.PASS);
+            connection = DriverManager.getConnection(Const.DB_URL, Const.USER, Const.PASS);
             String sql = "use problem"+proId;
-            Statement stmt = connection.createStatement();
+            stmt = connection.createStatement();
             stmt.execute(sql);
             sql =  "select * from "+tableName;
-            ResultSet rs = stmt.executeQuery(sql);
+            rs = stmt.executeQuery(sql);
 
             ResultSetMetaData resultSetMetaData = rs.getMetaData();
             //System.out.println(resultSetMetaData.getColumnName(1));
@@ -42,12 +45,22 @@ public class TableInfo {
             ret += NewBorder.addBorder(temp);
 
             // 完成后关闭
-            rs.close();
-            stmt.close();
-            connection.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
             ret += e.getMessage();
+        }
+        finally {
+            try {
+                if (connection != null)
+                    connection.close();
+                if (rs != null)
+                    rs.close();
+                if (stmt != null)
+                    stmt.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return ret;
     }

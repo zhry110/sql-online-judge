@@ -66,11 +66,11 @@ public class User {
         this.name = name == null ? null : name.trim();
     }
 
-    public void setJudgeing(boolean judgeing) {
+    public synchronized void setJudgeing(boolean judgeing) {
         isJudgeing = judgeing;
     }
 
-    public boolean isJudgeing() {
+    public synchronized boolean isJudgeing() {
         return isJudgeing;
     }
 }
