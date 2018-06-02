@@ -1,12 +1,12 @@
 package com.core;
 
-import com.sun.istack.internal.NotNull;
+
 
 import java.util.concurrent.BlockingQueue;
 
 public class JudgeThread extends Thread {
     private BlockingQueue<Problem> problems;
-    public JudgeThread(@NotNull BlockingQueue<Problem> problems)
+    public JudgeThread(BlockingQueue<Problem> problems)
     {
         this.problems = problems;
     }

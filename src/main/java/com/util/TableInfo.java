@@ -52,6 +52,8 @@ public class TableInfo {
                     rs.close();
                 if (stmt != null)
                     stmt.close();
+                if (connection != null)
+                    connection.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }

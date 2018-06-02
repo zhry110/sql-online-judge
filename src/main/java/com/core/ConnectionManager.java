@@ -2,25 +2,28 @@ package com.core;
 
 import com.common.Const;
 import com.common.ServerResponse;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.sql.DataSource;
+import javax.xml.transform.Result;
+import java.sql.*;
 
 public class ConnectionManager {
-    private static Connection connection = null;
-
+    private static  ApplicationContext ac = null;
+    private static DataSource dataSource = null;
     public static Connection getInstance() throws SQLException {
-        if (connection == null) {
-            connection = DriverManager.getConnection(Const.DB_URL, Const.USER, Const.PASS);
-            return connection;
-        } else {
-            if (connection.isClosed()) {
-                connection = null;
-                return getInstance();
-            }
-        }
-        return connection;
+        if (ac == null)
+            ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+        if (dataSource == null)
+            dataSource = (DataSource)ac.getBean("dataSource");
+        return dataSource.getConnection();
+    }
+    public static Connection getInstance(String username,String passwd) throws SQLException {
+        if (ac == null)
+            ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+        if (dataSource == null)
+            dataSource = (DataSource)ac.getBean("dataSource");
+        return dataSource.getConnection(username,passwd);
     }
 }

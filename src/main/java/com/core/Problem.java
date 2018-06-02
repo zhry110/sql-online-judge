@@ -14,11 +14,6 @@ public class Problem {
     }
     public String getAnswer(String answer) {
         String ret = new String();
-        try {
-            Class.forName(Const.JDBC_DRIVER);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         Connection connection = null;
         ResultSet rs = null;
         Statement stmt = null;
@@ -62,6 +57,8 @@ public class Problem {
                     rs.close();
                 if (stmt != null)
                     stmt.close();
+                if (connection != null)
+                    connection.close();
             } catch (Exception e)
             {
 

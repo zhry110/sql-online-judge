@@ -50,7 +50,7 @@ public class Judge {
     }
 
     public static ServerResponse createDatabase(String name) {
-        Connection connection ;
+        Connection connection = null;
         Statement statement = null;
         try {
             connection = ConnectionManager.getInstance();
@@ -64,6 +64,8 @@ public class Judge {
             try {
                 if (statement != null)
                     statement.close();
+                if (connection != null)
+                    connection.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -111,6 +113,8 @@ public class Judge {
             try {
                 if (statement != null)
                     statement.close();
+                if (connection != null)
+                    connection.close();
             }catch (Exception e) {
                 e.printStackTrace();
             }
